@@ -27,6 +27,7 @@
 - Para que o input do botão seja reconhecido é necessário que no momento em que o bit da linha(BIT-0,BIT-1,BIT-2,BIT-3) receba um pulso HIGH do microcontrolador da porta o arduino mande um HIGH na coluna(BIT-4,BIT-5,BIT-6).
 
 |-------| BIT-4 | BIT-5 | BIT-6 |
+|-------|-------|-------|-------|
 | BIT-0 |   1   |   2   |   3   |
 | BIT-1 |   4   |   5   |   6   |
 | BIT-2 |   7   |   8   |   9   |
