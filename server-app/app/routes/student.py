@@ -4,7 +4,7 @@ from sqlmodel import Field, Session, SQLModel, create_engine, select, Relationsh
 from db.db_handler import get_session
 from models.models import *
 from routes.access_history import access_log
-
+from datetime import timedelta
 
 
 router = APIRouter()
@@ -32,8 +32,8 @@ def read_student(input_search : StudentQuery, session : Session = Depends(get_se
         query = select(Student) # FROM STUDENT, SELECT ..
         if input_search.card_id is not None: # WHERE CARD_ID  == input
             query = query.where(Student.card_id == input_search.card_id)
-        elif input_search.id is not None: # WHERE ID  == input
-            query = query.where(Student.id == input_search.id)
+        elif input_search.registration is not None: # WHERE registration  == input
+            query = query.where(Student.registration == input_search.registration)
         else:
             raise HTTPException(status_code=400, detail=f"Bad Request:\n {str(e)}")    
             #return RedirectResponse(url="https://http.cat/status/400")
@@ -46,8 +46,6 @@ def read_student(input_search : StudentQuery, session : Session = Depends(get_se
     
     except Exception as e:
         raise HTTPException(status_code=204, detail=f"User not added:\n {str(e)}")
-    
-
 
 # Returns if usr exists (1. check cardId, 2. check RA, else is out)
 # @router.post("/usr")

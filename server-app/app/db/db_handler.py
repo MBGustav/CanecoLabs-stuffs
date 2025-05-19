@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from sqlmodel import Field, Session, SQLModel, create_engine, select, Relationship
 from sqlmodel.pool import StaticPool
-from models.models import Student, AccessHistory
+from models.models import Student, AccessHistory, ReserveHistory
 
 #To populate the table
 from faker import Faker
@@ -47,6 +47,8 @@ def populate_tables(num_regs=250):
     end_date = datetime.datetime(2025,4, 15)
     student_list = []
     access_list = []
+    reserve_list = []
+
 
     for i in range(num_regs):
         my_name = Faker().name()
@@ -63,16 +65,28 @@ def populate_tables(num_regs=250):
             course=my_course))
         
     for i in range(num_regs):
-        my_id = randint(0, len(student_list))
+        my_id = randint(0, len(student_list)-1)
         datetime_stamp = random_datetime(beg_date, end_date)
         access_list.append(AccessHistory(
             student_id=my_id,
             datetime_stamp=datetime_stamp
         ))
+    today = datetime.datetime.now()
+    next_days  = today + datetime.timedelta(days=10)
+    for i in range(num_regs):
+        reserve_list.append(ReserveHistory(
+            date_stamp=random_datetime(today, next_days),
+            student_id = randint(0, len(student_list)-1)
+        ))
+
 
     with Session(engine) as session:
         for student in student_list:
             session.add(student)
         for access in access_list:
             session.add(access)
+        for reserve in reserve_list:
+            session.add(reserve)
+        
         session.commit()
+
