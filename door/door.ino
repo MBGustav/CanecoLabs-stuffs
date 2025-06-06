@@ -12,7 +12,7 @@ Simulation  : https://wokwi.com/projects/429666233774245889
 #include <SPI.h>
 #include <MFRC522.h>
 
-#include "guaxinin.h"s
+#include "guaxinin.h"
 #include "LCD.h"
 #include "matrix_button.h"
 #include "motor.h"
@@ -26,7 +26,7 @@ Simulation  : https://wokwi.com/projects/429666233774245889
 
 LiquidCrystal_I2C lcd(0x27, 16, 2); 
 
-RFID RC522
+//RFID RC522
 #define SS_PIN 5
 #define RST_PIN 4
 MFRC522 rfid(SS_PIN, RST_PIN);
@@ -83,24 +83,32 @@ void abrirPorta() {
   
   // Espera até cartão ser lido
   String uid = "";
-  while (uid == "") {
-    uid = ReadUID(rfid);
-  }
+  char exit;
 
+  while ((uid == "")&(exit != '#')) {
+      exit = keypad.getKey();
+      uid = ReadUID(rfid);
+  }
   lcd.clear();
-  if (CheckUID(uid)) {
-    lcd.setCursor(0, 0);
-    lcd.print("Abrindo :)");
-    Open();
-  } else {
-    lcd.setCursor(0, 0);
-    lcd.print("Nao cadastrado");
-  }
+  lcd.setCursor(0, 0);
 
-  lcd.setCursor(0, 1);
-  lcd.print(uid);
+ if (uid != ""){
+    
+    
+    if (CheckUID(uid)) {
+      lcd.print("Abrindo :)");
+      Open();
+    } else {
+      lcd.print("Nao cadastrado");
+    }
+
+    lcd.setCursor(0, 1);
+    lcd.print(uid);
+    
+  }
+  else
+    lcd.print("Cancelado");
   
-  Open();
   delay(2000);
   mostrarMenu(lcd);
 }
@@ -114,7 +122,7 @@ void marcarHorario() {
 
 void checarCadastro() {
   lcd.clear();
-  lcd.print("Marcando hora...");
+  lcd.print("Checando cadastro...");
   delay(2000);
   mostrarMenu(lcd);
 }
@@ -126,8 +134,12 @@ void criarCadastro() {
   delay(500);
   mostrarMenu(lcd);
 }
-*/
+
 void pedirSenha() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Digite a senha:");
+  lcd.setCursor(0, 1);
 
   String senhaDigitada = "";
 
@@ -137,19 +149,31 @@ void pedirSenha() {
       if (tecla == '*') {
         break; // Confirma a senha
       } else if (tecla == '#') {
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Digite a senha:");
+        lcd.setCursor(0, 1);
         senhaDigitada = ""; // Limpa a entrada
       } else if (isDigit(tecla) && senhaDigitada.length() < 10) {
         senhaDigitada += tecla;
+        lcd.print("*");
       }
     }
   }
 
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  
+
   if (senhaDigitada == "13579") {
+    lcd.print("Abrindo :)");
     Open();
   } else {
+    lcd.print("Senha Incorreta");
   }
 
   delay(2000);
+  mostrarMenu(lcd);
 }
 
 

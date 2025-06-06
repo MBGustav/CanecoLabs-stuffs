@@ -5,6 +5,7 @@
 #include <LiquidCrystal_I2C.h>
 
 
+void Show_Caneco(LiquidCrystal_I2C lcd);
 void mostrarMenu(LiquidCrystal_I2C lcd);
 void ligarLCD(LiquidCrystal_I2C lcd);
 void desligarLCD(LiquidCrystal_I2C lcd);
